@@ -64,17 +64,19 @@ void drawChar5x7(u_char rcol, u_char rrow, char c,
     while (col < 5) {
       u_int colorBGR = (font_5x7[oc][col] & bit) ? fgColorBGR : bgColorBGR;
       lcd_writeColor(colorBGR);
-      col++;
+      col+=1;
     }
     col = 0;
     bit <<= 1;
-    row++;
+    row+=1;
   }
 }
 
 /** Draw string at col,row
  *  Type:
- *  FONT_SM - small (5x8,) FONT_MD - medium (8x12,) FONT_LG - large (11x16)
+ *  FONT_SM - small (5x8,) 
+FONT_MD - medium (8x12,) 
+FONT_LG - large (11x16)
  *  FONT_SM_BKG, FONT_MD_BKG, FONT_LG_BKG - as above, but with background color
  *  Adapted from RobG's EduKit
  *
@@ -90,7 +92,7 @@ void drawString5x7(u_char col, u_char row, char *string,
   u_char cols = col;
   while (*string) {
     drawChar5x7(cols, row, *string++, fgColorBGR, bgColorBGR);
-    cols += 6;
+    cols += 8;
   }
 }
 
