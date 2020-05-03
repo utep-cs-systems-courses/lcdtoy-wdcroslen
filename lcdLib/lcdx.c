@@ -106,6 +106,7 @@ void method(){
 
   drawString5x7(10,10, "switches:", COLOR_GREEN, COLOR_BLUE);
   int a = 1;
+  int blink = 0;
   while (a) {
      char p2val = P2IN;
      switch_state_down = (p2val & SW1) ? 0 : 1;
@@ -185,9 +186,6 @@ void method(){
 			 */
     }
 
-
-
-     
    else if(switch_state_down){
       clearScreen(COLOR_RED);
       str[0] = 'Y';
@@ -212,6 +210,8 @@ void method(){
       str[1] = 'e';
       str[2] = 'a';
       str[3] = 't';
+      blink = 0;
+      state = 0;
       drawString5x7(20,20, str, COLOR_BLACK, COLOR_YELLOW);
     }
    else if(switch_state_down4){
@@ -220,25 +220,24 @@ void method(){
       str[1] = 'e';
       str[2] = 'a';
       str[3] = 't';
+      blink = 0;
       drawString5x7(20,20, str, COLOR_BLACK, COLOR_GREEN);
     }
    if(switch_state_down && switch_state_down2){
       clearScreen(COLOR_BLACK);
       or_sr(0x10);
+      
       and_sr(~10);
     }
    if(switch_state_down3 && switch_state_down2){
       clearScreen(COLOR_BLACK);
       a=0;
     }
-    //for(int i =0; i<10000; i++){
-      // buzzer_set_period(670);
-    //  and_sr(~10);
-    // }
-    if (!switch_state_down){
+
+   if (!switch_state_down){
 	buzzer_set_period(0);
       }
-    if (switch_state_down4){
+   if(switch_state_down4 && ++blink == 2){// && ++blink ==20){
       cont2 = ~cont2;
       cont = 0;
       //state_advance();
@@ -248,20 +247,38 @@ void method(){
       }
       buzzer_set_period(tetris[state]);
       state++;
-
-      /* newTune();
-      
-	 state=0;*/
-    }
+      //newTune();
+      blink =0 ;
+   }
     //alternate speeds every press
-    if (!switch_state_down4){
+    /*if (!switch_state_down4){
       if(secondSpeed==1){
 	secondSpeed = 0;
       }
       else{
 	secondSpeed = 1;
       }
-    }
+    } */
+
+    // if(switch_state_down4 && ++blink ==20){
+    // newTune();
+    // }
+   CCR0 += 50000;
+   if(++blink == 20){
+     // newTune();
+     state++;
+     clearScreen(COLOR_BLUE);
+   }
+
+
+
+
+
+
+
+
+
+    
     /*
     if(!switch_state_down && !switch_state_down2 && !switch_state_down3 && !switch_state_down4)
       {
