@@ -1,0 +1,12 @@
+if(switch_state_down4) {
+    if(secondSpeed==1){
+      if(++blink_count == 20){
+      	//state_advance();
+	state++;
+	newTune(state);
+	blink_count = 0;
+	if (state >120){
+	  state = 0;
+	}
+      }
+    }
