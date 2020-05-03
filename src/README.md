@@ -1,4 +1,4 @@
-# lcdLib from Project 3: LCD Game
+# src Project 3:
 ## Introduction
 
 lcdLib provides primitives for a pixel, rectangle, clearing the screen and a 5x7 font. Handles all the lower-level "messy stuff". 
