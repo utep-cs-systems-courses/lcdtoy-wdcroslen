@@ -121,16 +121,6 @@ switch_interrupt_handler()
 }
 
 
-//void
-//__interrupt_vec(PORT2_VECTOR) Port_2(){
-  // if (P2IFG & switches) {  /* did a button cause this interrupt? */
-/*   P2IFG &= ~switches;	/* clear pending sw interrupts */
-/*  switch_update_interrupt_sense();
-  }
-}
-*/
-//}
-
 void method(){
   clearScreen(COLOR_BLUE);
 
@@ -150,14 +140,10 @@ void method(){
      
     if(switch_state_down && switch_state_down4){
        clearScreen(COLOR_BLACK);
-       // drawString5x7(30,20, "cat sucks", COLOR_BLACK, COLOR_WHITE);
+
    drawString5x7(45,5, "TETRIS", COLOR_PURPLE, COLOR_BLACK);
   
-   //unsigned char j = 0;
-   //unsigned char i =0;
- /*Border*/
-  
- /*I-block Cyan Piece */
+ /*t-block Cyan Piece */
  fillRectangle(65,70, 10, 10, COLOR_PINK); 
  fillRectangle(55,80, 10, 10, COLOR_PINK);
  fillRectangle(65,80, 10, 10, COLOR_PINK);
@@ -180,6 +166,7 @@ void method(){
       str[1] = 'e';
       str[2] = 'e';
       str[3] = 't';
+      buzzer_set_period(520);
        /*I-block Cyan Piece */
  fillRectangle(19,90, 10, 10, COLOR_CYAN); 
  fillRectangle(29,90, 10, 10, COLOR_CYAN);
@@ -203,6 +190,7 @@ void method(){
       str[1] = 'e';
       str[2] = 'e';
       str[3] = 't';
+      buzzer_set_period(620);
       fillRectangle(69,40, 10, 10, COLOR_YELLOW); 
       fillRectangle(69,50, 10, 10, COLOR_YELLOW);
       fillRectangle(79,40, 10, 10, COLOR_YELLOW);
@@ -213,19 +201,15 @@ void method(){
 	  drawPixel(69+j,40+i,COLOR_BLACK);
 	}
       }
-      
-
-  
-      drawString5x7(20,20, str, COLOR_BLACK, COLOR_ORANGE);
-      // buzzer_set_period(tetris[tet]);
-      // tet++;
-    }
+    drawString5x7(20,20, str, COLOR_BLACK, COLOR_ORANGE);
+   }
    else if(switch_state_down3){
       clearScreen(COLOR_YELLOW);
       str[0] = 'B';
       str[1] = 'e';
       str[2] = 'a';
       str[3] = 't';
+      buzzer_set_period(720);
       fillRectangle(59,110, 10, 10, COLOR_ORANGE); 
  fillRectangle(69,110, 10, 10, COLOR_ORANGE);
  fillRectangle(79,110, 10, 10, COLOR_ORANGE);
@@ -304,18 +288,12 @@ void method(){
       a=0;
       method();
     }
-   // if(state == 200){
-   // clearScreen(COLOR_BLACK);
-   //}
    if (!switch_state_down){
 	buzzer_set_period(0);
       }
-   if(switch_state_down4 && ++blink == 2){// && ++blink ==20){
+   if(switch_state_down4 && ++blink == 2){
       cont2 = ~cont2;
       cont = 0;
-      //state_advance();
-      //state++;  
-      //newTune();
       blink =0 ;
    }
 
@@ -331,40 +309,3 @@ void method(){
     
   }
 }
-  /*
-   clearScreen(COLOR_YELLOW);
-  /********DRAW TRIANGLE **********/
-  /* for (i = 0; i <= 15; i+=1){
-    u_char l = 15-i;
-    u_char r = 15;
-    for(j=l; j <=r; j+=1){
-      drawPixel(30-j,30-i,COLOR_RED);
-      drawPixel(j+30,30-i,COLOR_RED);
-      drawPixel(j+30,i+30,COLOR_RED);
-      drawPixel(30-j,i+30,COLOR_RED);
-    }
-  }
-  /*********************/
-
-  /*
- for(i=0;i<=10;i++){
-    drawPixel(50+i,10+50,COLOR_BLUE);
-    drawPixel(10+50,i+50,COLOR_BLUE);
-    drawPixel(50,i+50,COLOR_BLUE);
-    drawPixel(i+50,50,COLOR_BLUE);
-  }
- // fillRectangle(50,50, 9, 10, COLOR_BLUE); 
- for(i=0;i<=10;i++){
-    drawPixel(54+i,10+46,COLOR_BLUE);
-    drawPixel(10+54,i+46,COLOR_BLUE);
-    drawPixel(54,i+46,COLOR_BLUE);
-    drawPixel(i+54,46,COLOR_BLUE);
-  }
- for(i=0; i<=4;i++){
-   drawPixel(50+i,60-i,COLOR_BLUE);//BL
-   drawPixel(60+i,60-i,COLOR_BLUE);//BR
-   drawPixel(50+i,50-i,COLOR_BLUE);//TL
-   drawPixel(60+i,50-i,COLOR_BLUE);//TR
- }
- drawString5x7(38,20, "Cat Sucks!", COLOR_BLACK, COLOR_WHITE);*/
-  //}
