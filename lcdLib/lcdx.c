@@ -2,15 +2,15 @@
  *  \brief A simple demo that draws a string and square
  */
 
-#define M_PI 3.14159265358979323846
+//#define M_PI 3.14159265358979323846
 #include <libTimer.h>
 #include "lcdx.h"
 #include "lcdutils.h"
 #include "lcddraw.h"
 #include <math.h>
-#include "p2switches.h"
+//#include "p2switches.h"
 
-int sans[] = {100,3405,3405,1700.3,0,2273,0,0,2408,0,2551,0,2863,0,3405,2863,2551,3822,3822,1700.3,0,2273,0,0,2408,0,2551,0,2863,0,3405,2863,2551,4050,4050,1700.3,0,2273,0,0,2408,0,2551,0,2863,0,3405,2863,2551,4290,4290,1700.3,0,2273,0,0,2408,0,2551,0,2863,0,3405,2863,2551};//,3405,3405,1700.3,0,2273,0,0,2408,0,2551,0,2863,0,3405,2863,2551,3822,3822,1700.3,0,2273,0,0,2408,0,2551,0,2863,0,3405,2863,2551,4050,4050,1700.3,0,2273,0,0,2408,0,2551,0,2863,0,3405,2863,2551,4290,4290,1700.3,0,2273,0,0,2408,0,2551,0,2863,0,3405,2863,2551};
+int sans[] = {100,3405,3405,1700.3,0,2273,0,0,2408,0,2551,0,2863,0,3405,2863,2551,3822,3822,1700.3,0,2273,0,0,2408,0,2551,0,2863,0,3405,2863,2551,4050,4050,1700.3,0,2273,0,0,2408,0,2551,0,2863,0,3405,2863,2551,4290,4290,1700.3,0,2273,0,0,2408,0,2551,0,2863,0,3405,2863,2551};
 
 int tetris[] = {0,3034,3034,0,4050,0,3822,0,3405,0,3034,3405,3822,0,4050,0,4545,4545,4545,0,4545,0,3822,0,3034,3034,3034,0,3405,0,3822,0,4050,4050,4050,0,4050,0/*Limit?*/,3822,0,3405,3405,3405,0,3034,3034,3034,3034,3822,3822,0,0,4545,4545,0,0,4545,4545,4545,0,0,0,/**/3405,3405,0,2863,0,2273,2273,2273,0,2551,0,2863,0,3034,3034,3034,0,0,3822,0,3034,3034,3034,0,3405,0,3822,0,4050,4050,4050,0,4050,0,3822,0,3405,3405,0,0,3034,3034,0,0,3822,3822,0,0,4545,4545,4545,0,4545,4545,4545,0,0};
 
@@ -32,14 +32,81 @@ main()
   configureClocks();
   lcd_init();
   p2sw_init(15);
+  switch_init();
+  buzzer_init();
+  //or_sr(0x8);/* GIE (enable interrupts) */
+  // state =0;
+  // WDT();
+  //method();
+  enableWDTInterrupts();
+  // method();
+  clearScreen(COLOR_GOLD);
+  drawString5x7(20,20,"Goodbye!",COLOR_BLACK,COLOR_GOLD);
+  method();
+  or_sr(0x18);
+  
+}
 
-  or_sr(0x8);/* GIE (enable interrupts) */
+static char
+switch_update_interrupt_sense()
+{
+  char p2val = P2IN;
+  /* update switch interrupt to detect changes from current buttons */
+  P2IES |= (p2val & SWITCHES);/* if switch up, sense down */
 
- 
+  P2IES &= (p2val | ~SWITCHES);/* if switch down, sense up */
+
+  return p2val;
+
+}
+
+void
+switch_init()/* setup switch */
+{
+  P2REN |= SWITCHES;/* enables resistors for switches */
+  P2IE = SWITCHES;/* enable interrupts from switches */
+  P2OUT |= SWITCHES;/* pull-ups for switches */
+  P2DIR &= ~SWITCHES;/* set switches' bits for input */
+
+  switch_update_interrupt_sense();
+}
+
+void
+
+switch_interrupt_handler()
+
+{
+
+  char p2val = switch_update_interrupt_sense();
+  // Determine which button is pressed down
+
+  switch_state_down = (p2val & SW1) ? 0 : 1; /* 0 when SW1 is up */
+
+  switch_state_down2 = (p2val & SW2) ? 0 : 1; /* 0 when SW2 is up */
+
+  switch_state_down3 = (p2val & SW3) ? 0 : 1; /* 0 when SW3 is up */
+
+  switch_state_down4 = (p2val & SW4) ? 0 : 1; /* 0 when SW4 is up */
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+void method(){
   clearScreen(COLOR_BLUE);
 
-   drawString5x7(10,10, "switches:", COLOR_GREEN, COLOR_BLUE);
-  while (1) {
+  drawString5x7(10,10, "switches:", COLOR_GREEN, COLOR_BLUE);
+  int a = 1;
+  while (a) {
      char p2val = P2IN;
      switch_state_down = (p2val & SW1) ? 0 : 1;
      switch_state_down2 = (p2val & SW2) ? 0 : 1;
@@ -54,7 +121,8 @@ main()
     
    
     if(switch_state_down && switch_state_down4){
-       drawString5x7(38,20, "cat sucks", COLOR_BLACK, COLOR_WHITE);
+      clearScreen(COLOR_WHITE);
+      drawString5x7(30,20, "cat sucks", COLOR_BLACK, COLOR_WHITE);
    drawString5x7(45,5, "TETRIS", COLOR_PURPLE, COLOR_WHITE);
   
    unsigned char j = 0;
@@ -126,6 +194,7 @@ main()
       str[1] = 'e';
       str[2] = 'e';
       str[3] = 't';
+      drawString5x7(20,20, str, COLOR_BLACK, COLOR_RED);
     }
    else if(switch_state_down2){
       clearScreen(COLOR_ORANGE);
@@ -133,6 +202,9 @@ main()
       str[1] = 'e';
       str[2] = 'e';
       str[3] = 't';
+      drawString5x7(20,20, str, COLOR_BLACK, COLOR_ORANGE);
+      // buzzer_set_period(tetris[tet]);
+      // tet++;
     }
    else if(switch_state_down3){
       clearScreen(COLOR_YELLOW);
@@ -140,6 +212,7 @@ main()
       str[1] = 'e';
       str[2] = 'a';
       str[3] = 't';
+      drawString5x7(20,20, str, COLOR_BLACK, COLOR_YELLOW);
     }
    else if(switch_state_down4){
       clearScreen(COLOR_GREEN);
@@ -147,13 +220,47 @@ main()
       str[1] = 'e';
       str[2] = 'a';
       str[3] = 't';
+      drawString5x7(20,20, str, COLOR_BLACK, COLOR_GREEN);
     }
-    if(switch_state_down && switch_state_down2){
+   if(switch_state_down && switch_state_down2){
       clearScreen(COLOR_BLACK);
       or_sr(0x10);
-    }
-    for(int i =0; i<10000; i++){
       and_sr(~10);
+    }
+   if(switch_state_down3 && switch_state_down2){
+      clearScreen(COLOR_BLACK);
+      a=0;
+    }
+    //for(int i =0; i<10000; i++){
+      // buzzer_set_period(670);
+    //  and_sr(~10);
+    // }
+    if (!switch_state_down){
+	buzzer_set_period(0);
+      }
+    if (switch_state_down4){
+      cont2 = ~cont2;
+      cont = 0;
+      //state_advance();
+      //state++;
+      if (state > 120){
+	state = 0;
+      }
+      buzzer_set_period(tetris[state]);
+      state++;
+
+      /* newTune();
+      
+	 state=0;*/
+    }
+    //alternate speeds every press
+    if (!switch_state_down4){
+      if(secondSpeed==1){
+	secondSpeed = 0;
+      }
+      else{
+	secondSpeed = 1;
+      }
     }
     /*
     if(!switch_state_down && !switch_state_down2 && !switch_state_down3 && !switch_state_down4)
@@ -177,11 +284,14 @@ main()
     */
     
     str[4] = 0;
-    // drawString5x7(20,20, str, COLOR_BLACK, COLOR_WHITE); 
+    // drawString5x7(20,20, str, COLOR_BLACK, COLOR_WHITE);
+    // }
+    //WDT();
   }
+}
 
-  u_char width = screenWidth, height = screenHeight;
-  
+// u_char width = screenWidth, height = screenHeight;
+ /*
   clearScreen(COLOR_WHITE);
   u_char i;  /*
   for(i = 0; i <32; i++){
@@ -190,7 +300,7 @@ main()
   }
   */
   /*Draw Triangle */
-  u_char j;
+  /* u_char j;
   i = 0;
   /*
   for(j=0; j < 40; j++){
@@ -202,7 +312,7 @@ main()
   */
 
     /* ***************************  */
-  j = 0;
+  /*j = 0;
   u_char k= 0;
   for(j = 18; j>=10; j--){
     for(i = 52; i<72; i++){
@@ -284,4 +394,10 @@ main()
    drawPixel(60+i,50-i,COLOR_BLUE);//TR
  }
  drawString5x7(38,20, "Cat Sucks!", COLOR_BLACK, COLOR_WHITE);*/
+  //}
+/*
+void newTune(int st){
+ buzzer_set_period(tetris[state]);
+ state++;
 }
+*/

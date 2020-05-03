@@ -25,8 +25,9 @@ clean:
 lcddemo.elf: lcddemo.o libLcd.a 
 	$(CC) $(CFLAGS) $(LDFLAGS) $^ -o $@ -lTimer 
 
-lcdx.elf: lcdx.o libLcd.a
+lcdx.elf: lcdx.o buzzer.o statemachines.o wdInterruptHandler.o libLcd.a
 	$(CC) $(CFLAGS) $(LDFLAGS) $^ -o $@ -lTimer -lp2sw -lTimer
+
 load: lcddemo.elf
 	msp430loader.sh $^
 
