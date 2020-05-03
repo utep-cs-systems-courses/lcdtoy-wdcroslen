@@ -1,16 +1,15 @@
 # src Project 3:
+
 ## Introduction
+This code starts with a "Hello World!" welcom message on the beginning screen
+and with each button press changes screens to display a new message as well as
+a Tetris piece!
 
-lcdLib provides primitives for a pixel, rectangle, clearing the screen and a 5x7 font. Handles all the lower-level "messy stuff". 
+If you press the first and fourth switch simultaneously you will also go to a
+new screen and the first and second switch will turn the cpu off.
 
 
-Two types are defined (used as shortcut to typing "unsigned [type]"):
-
- - u_char : unsigned char
-
- - u_int : unsigned int
-
-## Files
+## lcdx code
 
  - lcdutils.h, lcdutils.c: these provide the lowest level interface to
    the lcd such as
