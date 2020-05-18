@@ -12,19 +12,19 @@
 #include <time.h>
 int sans[] = {0};
 int tetris[] = {3034,3034,0,4050,0,3822,0,3405,0,3034,3405,3822,0,4050,0,4545,4545,4545,0,4545,0,3822,0,3034,3034,3034,0,3405,0,3822,0,4050,4050,4050,0,4050,0/*Limit?*/,3822,0,3405,3405,3405,0,3034,3034,3034,3034,3822,3822,0,0,4545,4545,0,0,4545,4545,4545,0,0,0,/**/3405,3405,3405,0,2863,0,2273,2273,2273,0,2551,0,2863,0,3034,3034,3034,0,0,3822,0,3034,3034,3034,0,3405,0,3822,0,4050,4050,4050,0,4050,0,3822,0,3405,3405,0,0,3034,3034,0,0,3822,3822,0,0,4545,4545,4545,0,4545,4545,4545,0,0};
-
+int redrawScreen = 1;
 int st,tet = 0;
 
 int mario[] = {0};
 
 int cont,cont2,secondSpeed = 0;
 
-char state, switch_state_down, switch_state_down2, switch_state_down3,switch_state_down4, switch_state_changed;
+char state, switch_state_down, switch_state_down2, switch_state_down3,switch_state_down4, switch_state_changed, sleep;
 
 /* Dimensions = 160 x 128 */
 /*TETRIS = 20 x 10 blocks */
 /*140 x 70 */
-/** Initializes everything, clears the screen, draws "hello" and a square */
+
 int
 main()
 {
@@ -34,22 +34,20 @@ main()
   switch_init();
   buzzer_init();
   enableWDTInterrupts();
-  or_sr(0x8);/* GIE (enable interrupts) */
-  /*P2DIR &= ~SWITCHES;
-   for(;;) {
-     if(switch_state_down){
-       P1OUT = 0;// clearSceen(COLOR_BLUE);
-     }
-     
-     if(switch_state_down2){
-       P1OUT = 1; //clearSceen(COLOR_RED);
-     }
-     P1OUT = (1 & SW1);
+  or_sr(0x8);
+  for(;;) {
+    while (!redrawScreen) {
+      clearScreen(COLOR_BLACK);   
+      or_sr(0x10); //SCHLEEP
+    }
+    //   P1OUT |= GREEN_LED; 
+    redrawScreen = 0;
+    method();
   }
-   */
+  
+ 
   clearScreen(COLOR_GOLD);
   drawString5x7(20,20,"Goodbye!",COLOR_BLACK,COLOR_GOLD);
-  method();
   or_sr(0x18);
   clearScreen(COLOR_BLUE);
   drawString5x7(10,10, "Hello World!", COLOR_GREEN, COLOR_BLUE);
@@ -57,6 +55,27 @@ main()
 }
 
 
+/*
+
+}
+
+*/
+
+/*
+void wdt_c_handler()
+{
+  static short count = 0;
+  P1OUT |= GREEN_LED; 
+  count ++;
+  if (count == 15) {
+    //mlAdvance(&ml0, &fieldFence);
+    if (p2sw_read())
+      redrawScreen = 1;
+    count = 0;
+  } 
+  P1OUT &= ~GREEN_LED;
+}
+*/
 
 static char
 switch_update_interrupt_sense()
@@ -118,7 +137,7 @@ void method(){
      
     if(switch_state_down && switch_state_down4){
        clearScreen(COLOR_BLACK);
-
+       redrawScreen =1;
    drawString5x7(45,5, "TETRIS", COLOR_PURPLE, COLOR_BLACK);
   
  /*t-block Cyan Piece */
@@ -163,6 +182,8 @@ void method(){
       drawString5x7(20,20, str, COLOR_BLACK, COLOR_RED);
     }
    else if(switch_state_down2){
+      redrawScreen = 1;
+      sleep = 0;
       clearScreen(COLOR_ORANGE);
       str[0] = 'F';
       str[1] = 'e';
@@ -182,6 +203,8 @@ void method(){
     drawString5x7(20,20, str, COLOR_BLACK, COLOR_ORANGE);
    }
    else if(switch_state_down3){
+      redrawScreen = 1;
+      sleep = 0;
       clearScreen(COLOR_YELLOW);
       str[0] = 'B';
       str[1] = 'e';
@@ -218,6 +241,8 @@ void method(){
       drawString5x7(20,20, str, COLOR_BLACK, COLOR_YELLOW);
     }
    else if(switch_state_down4){
+      redrawScreen = 1;
+      sleep = 0;
       clearScreen(COLOR_GREEN);
       str[0] = 'M';
       str[1] = 'e';
@@ -269,12 +294,18 @@ void method(){
    if (!switch_state_down){
 	buzzer_set_period(0);
       }
+    if(switch_state_down4) {
+	state++;
+	newTune(state);
+	if (state >120){
+	  state = 0;
+	}
+    }
    if(switch_state_down4 && ++blink == 2){
       cont2 = ~cont2;
       cont = 0;
       blink =0 ;
    }
-
    if(++blink==2){
      buzzer_set_period(tetris[state]);
      state++;
@@ -284,6 +315,4 @@ void method(){
      blink = 0;
    }
     str[4] = 0;
-    
-    //  }
 }
