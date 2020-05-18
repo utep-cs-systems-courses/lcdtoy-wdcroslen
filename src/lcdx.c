@@ -33,29 +33,8 @@ main()
   p2sw_init(15);
   switch_init();
   buzzer_init();
-   clock_t begin;
-   double time_spent;
-   unsigned int b;
-  //  Mark beginning time
-  // begin = clock();
-   /*for (i=0;1;i++){
-	//	printf("hello\n");
-	Get CPU time since loop started
-    time_spent = (double)(clock() - begin) / CLOCKS_PER_SEC;
-    if (time_spent>=5.0){
-	  break;
-    }
-      }
-  */
-  
-  //or_sr(0x8);/* GIE (enable interrupts) */
-  // state =0;
-  // WDT();
-  //method();
-  
   enableWDTInterrupts();
-  // method();
-  
+  or_sr(0x8);/* GIE (enable interrupts) */
   /*P2DIR &= ~SWITCHES;
    for(;;) {
      if(switch_state_down){
@@ -72,7 +51,9 @@ main()
   drawString5x7(20,20,"Goodbye!",COLOR_BLACK,COLOR_GOLD);
   method();
   or_sr(0x18);
-  
+  clearScreen(COLOR_BLUE);
+  drawString5x7(10,10, "Hello World!", COLOR_GREEN, COLOR_BLUE);
+ 
 }
 
 
@@ -122,12 +103,9 @@ switch_interrupt_handler()
 
 
 void method(){
-  clearScreen(COLOR_BLUE);
-
-  drawString5x7(10,10, "Hello World!", COLOR_GREEN, COLOR_BLUE);
   int a = 1;
   int blink = 0;
-  while (a) {
+  // while (a) {
      char p2val = P2IN;
      switch_state_down = (p2val & SW1) ? 0 : 1;
      switch_state_down2 = (p2val & SW2) ? 0 : 1;
@@ -307,5 +285,5 @@ void method(){
    }
     str[4] = 0;
     
-  }
+    //  }
 }

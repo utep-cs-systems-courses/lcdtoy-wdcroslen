@@ -16,21 +16,25 @@ __interrupt_vec(WDT_VECTOR) WDT(){ /* 250 interrupts/sec */
   //if (switch_state_down && ++blink_count ==33){
   // method(); 
   // }
-  if (++blink_count == 100){
+  method();
+  
+  if (++blink_count == 200){
     clearScreen(COLOR_PURPLE);
   }
-  if(++blink_count == 400){ //switch_state_down){
+  /*  if(++blink_count == 400){ //switch_state_down){
     clearScreen(COLOR_YELLOW);
     method();
     
   }
-  if (cont && ++blink_count == 33) {
+  */
+  if (cont && ++blink_count == 10) {
     if (state >64){
       state = 0;
     }
     advanceSounds(state);
     blink_count = 0;
   }
+  
   /* if (cont2 && ++blink_count == 30) {
      if (state > 64){
       state = 0;
@@ -51,6 +55,7 @@ __interrupt_vec(WDT_VECTOR) WDT(){ /* 250 interrupts/sec */
 	}
       }
     }
+    /*
     else{
       if(++blink_count == 100){
 	//state_advance();
@@ -58,5 +63,6 @@ state++;
 	blink_count = 0;
       }
     }
+    */
   }
 }
